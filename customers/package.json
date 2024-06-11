@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "npx tsc",
-    "start": "npx ts-node src/app.ts",
+    "start": "ts-node src/app.ts",
     "dev": "npx nodemon src/app.ts"
   },
   "keywords": [],
@@ -23,6 +23,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
   }
