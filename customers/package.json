@@ -8,8 +8,8 @@
   },
   "scripts": {
     "build": "npx tsc",
-    "start": "npx ts-node src/index.ts",
-    "dev": "npx nodemon src/index.ts"
+    "start": "npx ts-node src/app.ts",
+    "dev": "npx nodemon src/app.ts"
   },
   "keywords": [],
   "author": "",
