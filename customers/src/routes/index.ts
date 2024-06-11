@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import usersRouter from './users.routes';
+import customerRoutes from './customer.routes';
 
 // Create a new Router instance
 const router = Router();
 
 // Mount the routers
-router.use('/users', usersRouter);
+router.use('/customers', customerRoutes);
 
 export default router;
