@@ -1,0 +1,42 @@
+version: "3.3"
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      rabbitmq:
+
+  customers:
+    build:
+      context: ./customers
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 3001:3000
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+    networks:
+      rabbitmq:
+      mongo-customers:
+
+  mongo-customers:
+    image: mongo
+    volumes:
+      - /data/customers
+    networks:
+      mongo-customers:
+
+
+networks:
+  rabbitmq:
+  mongo-customers:

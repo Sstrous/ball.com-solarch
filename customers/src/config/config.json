@@ -1,0 +1,12 @@
+{
+  "port": 3000,
+  "rabbitmq": {
+    "host": "amqp://rabbitmq",
+    "exchange": "ball-com",
+    "queue": "ball-com.customers"
+  },
+  "mongodb": {
+    "read": "mongodb://mongo-customers:27017/customers-read",
+    "write": "mongodb://mongo-customers:27017/customers-write"
+  }
+}
