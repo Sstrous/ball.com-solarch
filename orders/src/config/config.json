@@ -1,0 +1,13 @@
+{
+  "port": 3000,
+  "rabbitmq": {
+    "local": "amqp://localhost",
+    "host": "amqp://rabbitmq",
+    "exchange": "ball-com",
+    "queue": "ball-com.orders"
+  },
+  "mongodb": {
+    "read": "mongodb://mongo-customers:27017/customers-read",
+    "write": "mongodb://mongo-customers:27017/customers-write"
+  }
+}
