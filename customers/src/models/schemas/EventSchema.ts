@@ -1,25 +1,31 @@
 import * as mongoose from "mongoose";
+import {SchemaTypes} from "mongoose";
 
 const EventSchema = new mongoose.Schema({
-timestamp: {
-    type: mongoose.SchemaTypes.Date,
-    required: true
-},
 
-type: {
-    type: mongoose.SchemaTypes.String,
-    required: true
-},
+    timestamp: {
+        type: SchemaTypes.Number,
+        required: true
+    },
 
-data: {
-    type: mongoose.SchemaTypes.String, // json
-    required: true
-},
+    type: {
+        type: SchemaTypes.String,
+        required: true
+    },
 
-customerEmail: {
-    type: mongoose.SchemaTypes.String,
-    required: true
-}
+    data: {
+        type: SchemaTypes.String, // json
+        required: true
+    },
+
+    email: {
+        type: SchemaTypes.String,
+        required: true,
+        unique: true
+    }
+
 });
 
-export default EventSchema;
+export {
+    EventSchema
+}

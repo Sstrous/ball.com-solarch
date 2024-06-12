@@ -5,7 +5,7 @@ import config from './config/config.json'
 import router from './routes/index';
 import {connect as amqpConnect} from './rabbitmq/amqp';
 import {addListeners} from './rabbitmq/EventBinding';
-import {connect as dbConnect} from './controllers/database.controller';
+import {connect as dbConnect} from './database/database';
 
 // Create Express server
 const app = express(); // New express instance
@@ -25,9 +25,9 @@ setTimeout(async () => {
   await addListeners();
   console.log("Listeners connected");
 
-  // await dbConnect(() => {
-  //   console.log("Connected to Database");
-  // });
+  await dbConnect(() => {
+    console.log("Connected to Database");
+  });
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
