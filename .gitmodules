@@ -1,0 +1,3 @@
+[submodule "libs/ball-com"]
+	path = libs/ball-com
+	url = https://github.com/Jelmer1220000/ball.com-library
