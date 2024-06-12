@@ -27,10 +27,6 @@ async function connect(callback: () => void): Promise<void> {
     });
 }
 
-function getChannel(): amqp.Channel {
-    return channel;
-}
-
 async function addExchangeListener(routingKey: string, callback: (event: Event) => any) {
     await channel.bindQueue(config.rabbitmq.queue, config.rabbitmq.exchange, routingKey);
     exchangeListeners[routingKey] = callback;
@@ -42,7 +38,6 @@ function publish(routingKey: string, obj: object): boolean {
 
 export {
     connect,
-    getChannel,
     publish,
     addExchangeListener
 }
