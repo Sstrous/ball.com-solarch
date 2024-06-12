@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import Event from '../models/Event';
-import * as database from "../database/database";
+import { database } from '../../../libs/ball-com/export';
 
 
 async function getAllCustomers(req: Request, res: Response) {

@@ -3,9 +3,12 @@ import express from 'express';
 import config from './config/config.json'
 // import cors from 'cors';
 import router from './routes/index';
-import {connect as amqpConnect} from './rabbitmq/amqp';
 import {addListeners} from './rabbitmq/EventBinding';
-import {connect as dbConnect} from './controllers/database.controller';
+
+import { database } from '../../libs/ball-com/export';
+import { amqp } from '../../libs/ball-com/export';
+import CustomerSchema from './models/schemas/CustomerSchema';
+import EventSchema from './models/schemas/EventSchema';
 
 // Create Express server
 const app = express(); // New express instance
@@ -18,16 +21,16 @@ app.use('/', router);
 
 // Start the server with async (Callback) function to connect Rabbit, Listeners and open the server
 setTimeout(async () => {
-  await amqpConnect(() => {
+  await amqp.connect(config.rabbitmq.host, config.rabbitmq.exchange, config.rabbitmq.queue, () => {
     console.log("Connected to RabbitMQ");
   });
   
   await addListeners();
   console.log("Listeners connected");
 
-  // await dbConnect(() => {
-  //   console.log("Connected to Database");
-  // });
+  database.connect(config.mongodb.read, config.mongodb.write, CustomerSchema, EventSchema, () => {
+    console.log("Connected to database");
+  });
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);

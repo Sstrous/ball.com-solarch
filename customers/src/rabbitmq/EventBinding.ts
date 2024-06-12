@@ -1,4 +1,4 @@
-import * as amqp from "./amqp";
+import { amqp } from '../../../libs/ball-com/export';
 import { rabbitMQConnectionTest } from "../controllers/customer.controller";
 
 

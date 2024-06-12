@@ -6,7 +6,11 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".", // Root directory of the project
+    "paths": {
+      "models/*": ["libs/ball-com/*"] // Alias to submodule path
+    },
   },
-  "include": ["src"]
+  "include": ["src", "libs/ball-com/export.ts"]
 }
