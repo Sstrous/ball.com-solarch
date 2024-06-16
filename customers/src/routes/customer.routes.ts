@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getAllCustomers, getCustomerById, createCustomer } from '../controllers/customer.controller';
+import { getAllCustomers, getCustomerByEmail, createCustomer } from '../controllers/api.controller';
 
 // New Router instance
 const router = Router();
@@ -11,7 +11,7 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 router.get('/:email', (req: Request, res: Response) => {
-  getCustomerById(req, res);
+  getCustomerByEmail(req, res);
 })
 
 router.post('/create', (req: Request, res: Response) => {
