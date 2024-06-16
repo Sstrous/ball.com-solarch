@@ -1,12 +1,16 @@
 import * as mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema({
-  Id: {
+  id: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
+  email: {
     type: mongoose.SchemaTypes.String,
     unique: true,
     required: true,
   },
-  Paid: {
+  paid: {
     type: Boolean,
     required: true,
   },

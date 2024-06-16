@@ -1,4 +1,4 @@
-version: "2.4.12"
+version: "2.27.0"
 services:
   rabbitmq:
     image: rabbitmq:management
@@ -20,8 +20,10 @@ services:
       context: ./customers
       dockerfile: Dockerfile
     restart: on-failure
+    volumes:
+      - ./libs:/libs
     ports:
-      - 3000:3000
+      - 3001:3000
     depends_on:
       - rabbitmq
     links:
@@ -35,14 +37,17 @@ services:
       context: ./orders
       dockerfile: Dockerfile
     restart: on-failure
+    volumes:
+      - ./libs:/libs
     ports:
-      - 3001:3000
+      - 3002:3000
     depends_on:
       - rabbitmq
     links:
       - rabbitmq
     networks:
       rabbitmq:
+      mongo-orders:
 
 
   mongo-customers:
@@ -51,8 +56,16 @@ services:
       - /data/customers
     networks:
       mongo-customers:
+    
+  mongo-orders:
+    image: mongo
+    volumes:
+      - /data/orders
+    networks:
+      mongo-orders:
 
 
 networks:
   rabbitmq:
   mongo-customers:
+  mongo-orders:

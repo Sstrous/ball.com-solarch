@@ -1,12 +1,11 @@
 import { Router, Request, Response } from 'express';
-import { createOrder } from '../controllers/order.controller';
+import { createOrder } from '../controllers/api.controller';
 
 // New Router instance
 const router = Router();
 
-
-// Get all customers
-router.get('/', (req: Request, res: Response) => {
+// Create a new order
+router.post('/create', (req: Request, res: Response) => {
   createOrder(req, res);
 });
 
