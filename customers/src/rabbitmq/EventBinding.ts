@@ -1,11 +1,14 @@
 import { amqp } from '../../../libs/ball-com/export';
-import { rabbitMQConnectionTest } from "../controllers/customer.controller";
+import { orderCreatedEvent, rabbitMQConnectionTest } from "../controllers/event.controller";
 
 
 async function addListeners() {
-    // Event store
-    const prefix = 'customers.';
-    await amqp.addExchangeListener('orders.created', rabbitMQConnectionTest);
+    
+    //Calls from other projects
+    await amqp.addExchangeListener('orders.created', orderCreatedEvent);
+
+    //Update read database
+    await amqp.addExchangeListener('customers.created', rabbitMQConnectionTest);
 }
 
 export {
