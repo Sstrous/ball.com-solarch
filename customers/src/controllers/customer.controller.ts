@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
-import Event from '../models/Event';
+import Event from '../../../libs/ball-com/models/Event';
 import { database } from '../../../libs/ball-com/export';
-
 
 async function getAllCustomers(req: Request, res: Response) {
     //Get Customers from database
@@ -21,7 +20,7 @@ async function createCustomer(req: Request, res: Response) {
 
 async function rabbitMQConnectionTest(event:Event) {
     console.log("Connection called: " + event.data);
-    await database.storeEvent("order.created", {name: "Spike", email: "Spike@mail.com", address: "TestAddress"}, "Spike@mail.com");
+    await database.storeEvent("orders.created", {name: "Spike", email: "Spike@mail.com", address: "TestAddress"}, "Spike@mail.com");
 }
 
 export {

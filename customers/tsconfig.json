@@ -8,5 +8,5 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "libs/ball-com/export.ts"]
+  "include": ["src", "../libs/ball-com/export.ts"]
 }

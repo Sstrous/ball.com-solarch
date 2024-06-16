@@ -1,12 +1,13 @@
 // Import express, cors, helmet and morgan
 import express from 'express';
-import config from './config/config.json'
+import config from '../../libs/ball-com/config/config.json'
 // import cors from 'cors';
 import router from './routes/index';
+import {connect as amqpConnect} from './rabbitmq/amqp';
 import {addListeners} from './rabbitmq/EventBinding';
+import {connect as dbConnect} from './controllers/database.controller';
 
-import { database } from '../../libs/ball-com/export';
-import { amqp } from '../../libs/ball-com/export';
+import { amqp, database } from '../../libs/ball-com/export';
 import CustomerSchema from './models/schemas/CustomerSchema';
 import EventSchema from './models/schemas/EventSchema';
 
@@ -21,16 +22,22 @@ app.use('/', router);
 
 // Start the server with async (Callback) function to connect Rabbit, Listeners and open the server
 setTimeout(async () => {
-  await amqp.connect(config.rabbitmq.host, config.rabbitmq.exchange, config.rabbitmq.queue, () => {
+
+  //Adjust config file for this project
+  config.rabbitmq.queue = 'ball-com.orders';
+  config.mongodb.read = 'mongodb://mongo-customers:27017/orders.read';
+  config.mongodb.write = 'mongodb://mongo-customers:27017/orders.write';
+
+  await amqp.connect(() => {
     console.log("Connected to RabbitMQ");
   });
   
   await addListeners();
   console.log("Listeners connected");
 
-  database.connect(config.mongodb.read, config.mongodb.write, CustomerSchema, EventSchema, () => {
-    console.log("Connected to database");
-  });
+  // database.connect(CustomerSchema, EventSchema, () => {
+  //   console.log("Connected to database");
+  // });
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);

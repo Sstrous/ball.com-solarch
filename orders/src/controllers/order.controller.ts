@@ -1,8 +1,7 @@
-import { Router, Request, Response } from 'express';
-
-import { amqp, Order } from '../../../libs/ball-com/export';
+import { Request, Response } from 'express';
 
 async function createOrder(req: Request, res: Response) {
+    console.log(req.body)
     let order:Order = {
         id: req.body.id,
         amount: req.body.amount,
@@ -11,9 +10,9 @@ async function createOrder(req: Request, res: Response) {
         customerId: req.body.customerId,
     };
 
-    amqp.publish('orders.created', order);
-    res.status(200).send('Order created');
+    publish('order.created', {order: 'order created'})
 }
+
 
 export {
     createOrder,

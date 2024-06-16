@@ -1,13 +1,16 @@
+# Dockerfile for order microservice
 FROM node:18
 
 WORKDIR /app
 
+# Copy the order service files
 COPY . .
 
-COPY libs/ball-com /app/libs/ball-com
-
+# Install dependencies including ball-com
 RUN npm install
 
-CMD [ "npm", "start" ]
+# Command to run when container starts
+CMD ["npm", "start"]
 
+# Expose the port that your service runs on
 EXPOSE 3000
