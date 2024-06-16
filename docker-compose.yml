@@ -30,7 +30,7 @@ services:
       - rabbitmq
     networks:
       rabbitmq:
-      # mongo-customers:
+      mongo-customers:
 
   orders:
     build:
@@ -47,6 +47,7 @@ services:
       - rabbitmq
     networks:
       rabbitmq:
+      mongo-orders:
 
 
   mongo-customers:
@@ -55,6 +56,13 @@ services:
       - /data/customers
     networks:
       mongo-customers:
+    
+  mongo-orders:
+    image: mongo
+    volumes:
+      - /data/orders
+    networks:
+      mongo-orders:
 
 
 networks:
