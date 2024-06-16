@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Order, amqp } from '../../../libs/ball-com/export';
 
 async function createOrder(req: Request, res: Response) {
     console.log(req.body)
@@ -10,7 +11,7 @@ async function createOrder(req: Request, res: Response) {
         customerId: req.body.customerId,
     };
 
-    publish('order.created', {order: 'order created'})
+    amqp.publish('order.created', {order: order});
 }
 
 

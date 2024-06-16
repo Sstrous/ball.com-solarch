@@ -3,9 +3,7 @@ import express from 'express';
 import config from '../../libs/ball-com/config/config.json'
 // import cors from 'cors';
 import router from './routes/index';
-import {connect as amqpConnect} from './rabbitmq/amqp';
 import {addListeners} from './rabbitmq/EventBinding';
-import {connect as dbConnect} from './controllers/database.controller';
 
 import { amqp, database } from '../../libs/ball-com/export';
 import CustomerSchema from './models/schemas/CustomerSchema';
