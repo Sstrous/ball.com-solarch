@@ -68,3 +68,4 @@ services:
 networks:
   rabbitmq:
   mongo-customers:
+  mongo-orders:
