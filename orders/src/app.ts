@@ -6,8 +6,7 @@ import router from './routes/index';
 import {addListeners} from './rabbitmq/EventBinding';
 
 import { amqp, database } from '../../libs/ball-com/export';
-import CustomerSchema from './models/schemas/CustomerSchema';
-import EventSchema from './models/schemas/EventSchema';
+import OrdersSchema from './models/schemas/OrderSchema';
 
 // Create Express server
 const app = express(); // New express instance
@@ -17,6 +16,7 @@ const port = config.port || 3000; // Port number
 // app.use(cors()); // Enable CORS
 // Use routes
 app.use('/', router);
+app.use(express.json());
 
 // Start the server with async (Callback) function to connect Rabbit, Listeners and open the server
 setTimeout(async () => {
@@ -33,9 +33,9 @@ setTimeout(async () => {
   await addListeners();
   console.log("Listeners connected");
 
-  // database.connect(CustomerSchema, EventSchema, () => {
-  //   console.log("Connected to database");
-  // });
+  database.connect('Orders', OrdersSchema, () => {
+    console.log("Connected to database");
+  });
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);

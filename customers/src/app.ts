@@ -16,6 +16,7 @@ const port = config.port || 3000; // Port number
 // app.use(cors()); // Enable CORS
 // Use routes
 app.use('/', router);
+app.use(express.json());
 
 // Start the server with async (Callback) function to connect Rabbit, Listeners and open the server
 setTimeout(async () => {
@@ -32,9 +33,9 @@ setTimeout(async () => {
   await addListeners();
   console.log("Listeners connected");
 
-  // database.connect(CustomerSchema, EventSchema, () => {
-  //   console.log("Connected to database");
-  // });
+  database.connect('Customer', CustomerSchema, () => {
+    console.log("Connected to database");
+  });
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
