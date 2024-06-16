@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { createOrder } from '../controllers/order.controller';
+import { createOrder } from '../controllers/api.controller';
 
 // New Router instance
 const router = Router();

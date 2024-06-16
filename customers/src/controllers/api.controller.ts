@@ -1,18 +1,26 @@
 import { Router, Request, Response } from 'express';
-import { database, Customer } from '../../../libs/ball-com/export';
+import { database, Customer, amqp, customerRoutes } from '../../../libs/ball-com/export';
 
 async function getAllCustomers(req: Request, res: Response) {
     //Get Customers from database
-    res.send('Get all customers');
+   let customers = await database.getModel('Customer').find()
+    res.send(customers);
 }
 
 async function getCustomerByEmail(req: Request, res: Response) {
-    console.log("Get customer by email: " + req.params.email);
-    //Get Customer from database
-    res.send('Get customer by email');
+    let customer = await database.getModel('Customer').findOne({email: req.params.email});
+    if (!customer) {
+        res.status(404).send('Customer not found');
+        return;
+    }
+    res.send(customer);
 }
 
 async function createCustomer(req: Request, res: Response) {
+    if (await database.getModel('Customer').findOne({email: req.body.email})) {
+        res.status(400).send('Customer already exists');
+        return;
+    }
     let customer:Customer = {
         name: req.body.name,
         email: req.body.email,
@@ -20,7 +28,8 @@ async function createCustomer(req: Request, res: Response) {
     };
 
     //Store Customer in database save event
-    await database.storeEvent('customers.created', customer);
+    await database.storeEvent(customerRoutes.create, customer);
+    amqp.publish(customerRoutes.create, customer);
     res.status(201).send('Customer succesfully created');
 }
 
