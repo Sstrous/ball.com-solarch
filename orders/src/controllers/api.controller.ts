@@ -11,7 +11,7 @@ async function createOrder(req: Request, res: Response) {
         customerId: req.body.customerId,
     };
 
-    amqp.publish('order.created', {order: order});
+    amqp.publish('orders.created', {order: order});
 }
 
 
