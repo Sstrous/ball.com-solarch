@@ -1,12 +1,12 @@
-// Import express, cors, helmet and morgan
 import express from 'express';
-import config from '../../libs/ball-com/config/config.json'
 import bodyParser from "body-parser";
-// import cors from 'cors';
+
+import config from '../../libs/ball-com/config/config.json'
 import router from './routes/index';
 import {addListeners} from './connections/eventBindings';
-import {addDatabaseSchemas} from './connections/database';
+
 import { amqp, database } from '../../libs/ball-com/export';
+import {addDatabaseSchemas} from './connections/database';
 
 // Create Express server
 const app = express(); // New express instance
@@ -29,15 +29,15 @@ setTimeout(async () => {
   await amqp.connect(() => {
     console.log("Connected to RabbitMQ");
   });
-
+  database.connect(() => {
+    console.log("Connected to database");
+  });
+  
   await addListeners();
   console.log("Listeners connected");
 
-  database.connect(() => {
-    console.log("Connected to database");
-    addDatabaseSchemas();
-    console.log("Database schemas added");
-  });
+  addDatabaseSchemas();
+  console.log("Database schemas added");
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
