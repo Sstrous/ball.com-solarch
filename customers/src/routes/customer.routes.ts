@@ -1,23 +1,26 @@
 import { Router, Request, Response } from 'express';
-import { getAllCustomers, getCustomerByEmail, createCustomer, customerMiddleware } from '../controllers/api.controller';
+import * as customerController from '../controllers/api.controller';
 
 // New Router instance
 const router = Router();
 
-
 // Get all customers
 router.get('/', (req: Request, res: Response) => {
-  getAllCustomers(req, res);
+  customerController.getAllCustomers(req, res);
 });
 
 router.post('/create', (req: Request, res: Response) => {
-  createCustomer(req, res);
-})
+  customerController.createCustomer(req, res);
+});
 
-router.all('/:email', customerMiddleware);
+router.all('/:email', customerController.customerMiddleware);
+
+router.put('/:email', (req: Request, res: Response) => {
+  customerController.updateCustomer(req, res);
+});
 
 router.get('/:email', (req: Request, res: Response) => {
-  getCustomerByEmail(req, res);
-})
+  customerController.getCustomerByEmail(req, res);
+});
 
 export default router;
