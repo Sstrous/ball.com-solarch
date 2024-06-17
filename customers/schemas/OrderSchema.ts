@@ -1,8 +1,8 @@
 import * as mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema({
-  id: {
-    type: mongoose.SchemaTypes.String,
+  productIds: {
+    type: mongoose.SchemaTypes.Array,
     required: true,
   },
   email: {
