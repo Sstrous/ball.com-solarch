@@ -31,6 +31,12 @@ services:
     networks:
       rabbitmq:
       mongo-customers:
+  mongo-customers:
+    image: mongo
+    volumes:
+      - /data/customers
+    networks:
+      mongo-customers:
 
   orders:
     build:
@@ -48,24 +54,38 @@ services:
     networks:
       rabbitmq:
       mongo-orders:
-
-
-  mongo-customers:
-    image: mongo
-    volumes:
-      - /data/customers
-    networks:
-      mongo-customers:
-    
   mongo-orders:
     image: mongo
     volumes:
       - /data/orders
     networks:
       mongo-orders:
-
+  
+  warehouse:
+    build:
+      context: ./warehouse
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./libs:/libs
+    ports:
+      - 3003:3000
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+    networks:
+      rabbitmq:
+      mongo-warehouse:
+  mongo-warehouse:
+    image: mongo
+    volumes:
+      - /data/warehouse
+    networks:
+      mongo-warehouse:
 
 networks:
   rabbitmq:
   mongo-customers:
   mongo-orders:
+  mongo-warehouse:
