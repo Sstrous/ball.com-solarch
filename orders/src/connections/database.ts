@@ -1,5 +1,5 @@
-import { database } from "../../../libs/ball-com/export";
-import { EventSchema } from "../../../libs/ball-com/models/eventSchema";
+import { database, EventSchema } from "../../../libs/ball-com/export";
+
 import CustomerSchema from "../../schemas/CustomerSchema";
 import OrdersSchema from "../../schemas/OrderSchema";
 

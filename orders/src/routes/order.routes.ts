@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { createOrder } from '../controllers/api.controller';
+import { createOrder, orderMiddleware } from '../controllers/api.controller';
 
 // New Router instance
 const router = Router();
@@ -8,5 +8,7 @@ const router = Router();
 router.post('/create', (req: Request, res: Response) => {
   createOrder(req, res);
 });
+
+router.all('/:orderId', orderMiddleware);
 
 export default router;
