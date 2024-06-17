@@ -6,19 +6,15 @@ const OrdersSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
-  productId: {
-    type: mongoose.SchemaTypes.String,
-    required: true,
-  },
-  amount: {
-    type: mongoose.SchemaTypes.Number,
+  productList: {
+    type: mongoose.SchemaTypes.Array,
     required: true,
   },
   date: {
     type: mongoose.SchemaTypes.Date,
     required: true,
   },
-  customerId: {
+  customerEmail: {
     type: String,
     required: true,
   },

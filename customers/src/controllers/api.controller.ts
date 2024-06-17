@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { database, Customer, amqp, customerRoutes } from '../../../libs/ball-com/export';
 
 async function getAllCustomers(req: Request, res: Response) {
@@ -38,11 +38,24 @@ async function createCustomer(req: Request, res: Response) {
     res.status(201).send('Customer succesfully created');
 }
 
+async function updateCustomer(req: Request, res: Response) {
+    let updatedCustomer:Customer = {
+        name: req.body.name,
+        email: req.body.email,
+        address: req.body.address
+    };
+
+    await database.storeEvent(customerRoutes.update, updatedCustomer);
+    amqp.publish(customerRoutes.update, updatedCustomer);
+    res.status(200).send('Customer succesfully updated');
+}
+
 
 
 export {
     getAllCustomers,
     getCustomerByEmail,
     createCustomer,
-    customerMiddleware
+    customerMiddleware,
+    updateCustomer
 }
