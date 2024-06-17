@@ -34,7 +34,7 @@ setTimeout(async () => {
   });
   
   await addListeners();
-  console.log("Listeners connected");
+  console.log("RabbitMQ Listeners connected");
 
   addDatabaseSchemas();
   console.log("Database schemas added");
