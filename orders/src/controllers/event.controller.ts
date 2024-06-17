@@ -1,5 +1,4 @@
-import { Customer, database } from "../../../libs/ball-com/export";
-import Event from '../../../libs/ball-com/models/Event';
+import { Customer, database, Event } from "../../../libs/ball-com/export";
 
 async function customerCreatedEvent(event:Event) {
     console.log("Connection called: " + event.data);

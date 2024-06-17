@@ -7,12 +7,17 @@ async function getAllCustomers(req: Request, res: Response) {
     res.send(customers);
 }
 
-async function getCustomerByEmail(req: Request, res: Response) {
+async function customerMiddleware(req: Request, res: Response, next: any) {
     let customer = await database.getModel('Customer').findOne({email: req.params.email});
     if (!customer) {
         res.status(404).send('Customer not found');
         return;
     }
+    next();
+}
+
+async function getCustomerByEmail(req: Request, res: Response) {
+    let customer = await database.getModel('Customer').findOne({email: req.params.email});
     res.send(customer);
 }
 
@@ -39,4 +44,5 @@ export {
     getAllCustomers,
     getCustomerByEmail,
     createCustomer,
+    customerMiddleware
 }
