@@ -84,8 +84,33 @@ services:
     networks:
       mongo-warehouse:
 
+  logistics:
+    build:
+      context: ./logistics
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./libs:/libs
+    ports:
+      - 3004:3000
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+    networks:
+      rabbitmq:
+      mongo-logistics:
+  mongo-logistics:
+    image: mongo
+    volumes:
+      - /data/logistics
+    networks:
+      mongo-logistics:
+
+
 networks:
   rabbitmq:
   mongo-customers:
   mongo-orders:
   mongo-warehouse:
+  mongo-logistics:

@@ -34,7 +34,7 @@ async function createOrder(req: Request, res: Response) {
     };
 
     //Update database and send event
-    await database.storeEvent(orderRoutes.create, order);
+    await database.storeEvent(orderRoutes.create, order, order.id);
     amqp.publish(orderRoutes.create, order);
     res.status(201).send('Order succesfully created');
 }
@@ -76,7 +76,7 @@ async function updateOrder(req: Request, res: Response) {
         customerEmail: req.body.customerEmail ?? oldOrder.customerEmail,
     };
 
-    await database.storeEvent(orderRoutes.update, order);
+    await database.storeEvent(orderRoutes.update, order, order.id);
     amqp.publish(orderRoutes.update, order);
     res.status(200).send('Order updated');
 }
