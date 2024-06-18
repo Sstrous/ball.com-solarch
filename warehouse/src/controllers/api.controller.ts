@@ -47,7 +47,7 @@ async function createProduct(req: Request, res: Response) {
     };
 
     //Store Customer in database save event
-    await database.storeEvent(productRoutes.add, product);
+    await database.storeEvent(productRoutes.add, product, product.id);
     amqp.publish(productRoutes.add, product);
     res.status(201).send('Product succesfully added to warehouse');
 }
@@ -65,7 +65,7 @@ async function updateProduct(req: Request, res: Response) {
     }
 
     //Update product in database
-    await database.storeEvent(productRoutes.update, product);
+    await database.storeEvent(productRoutes.update, product, product.id);
     amqp.publish(productRoutes.update, product);
     res.status(200).send('Product updated');
 }

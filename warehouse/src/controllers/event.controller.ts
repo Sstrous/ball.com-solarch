@@ -47,7 +47,7 @@ async function orderCreatedEvent(event: Event) {
             product.quantity = 0;
 
             //Fire a new event that says this item is out of stock so order project knows product is not there anymore
-            database.storeEvent(productRoutes.update, product);
+            database.storeEvent(productRoutes.update, product, product.id);
             amqp.publish(productRoutes.update, product);
             return;
         }

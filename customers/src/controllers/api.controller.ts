@@ -44,7 +44,7 @@ async function createCustomer(req: Request, res: Response) {
     };
 
     //Store Customer in database save event
-    await database.storeEvent(customerRoutes.create, customer);
+    await database.storeEvent(customerRoutes.create, customer, customer.id);
     amqp.publish(customerRoutes.create, customer);
     res.status(201).send('Customer succesfully created');
 }
@@ -58,7 +58,7 @@ async function updateCustomer(req: Request, res: Response) {
         address: req.body.address ?? customer.address
     };
 
-    await database.storeEvent(customerRoutes.update, updatedCustomer);
+    await database.storeEvent(customerRoutes.update, updatedCustomer, customer.id);
     amqp.publish(customerRoutes.update, updatedCustomer);
     res.status(200).send('Customer succesfully updated');
 }
