@@ -8,25 +8,36 @@ async function getAllCustomers(req: Request, res: Response) {
 }
 
 async function customerMiddleware(req: Request, res: Response, next: any) {
-    let customer = await database.getModel('Customer').findOne({email: req.params.email});
+    let customer = await database.getModel('Customer').findOne({id: req.params.customerId});
     if (!customer) {
         res.status(404).send('Customer not found');
+        return;
+    }
+    res.locals.customer = customer;
+    next();
+}
+
+async function checkCreateRequest(req: Request, res: Response, next: any) {
+    let customer = req.body as Customer;
+    if (!customer.id || !customer.email || !customer.name || !customer.address) {
+        res.status(400).send('Invalid request, missing properties');
         return;
     }
     next();
 }
 
+
 async function getCustomerByEmail(req: Request, res: Response) {
-    let customer = await database.getModel('Customer').findOne({email: req.params.email});
-    res.send(customer);
+    res.send(res.locals.customer);
 }
 
 async function createCustomer(req: Request, res: Response) {
-    if (await database.getModel('Customer').findOne({email: req.body.email})) {
+    if (await database.getModel('Customer').findOne({id: req.body.id})) {
         res.status(400).send('Customer already exists');
         return;
     }
     let customer:Customer = {
+        id: req.body.id,
         name: req.body.name,
         email: req.body.email,
         address: req.body.address
@@ -39,10 +50,12 @@ async function createCustomer(req: Request, res: Response) {
 }
 
 async function updateCustomer(req: Request, res: Response) {
+    let customer = res.locals.customer;
+    
     let updatedCustomer:Customer = {
-        name: req.body.name,
-        email: req.body.email,
-        address: req.body.address
+        name: req.body.name ?? customer.name,
+        email: req.body.email ?? customer.email,
+        address: req.body.address ?? customer.address
     };
 
     await database.storeEvent(customerRoutes.update, updatedCustomer);
@@ -57,5 +70,6 @@ export {
     getCustomerByEmail,
     createCustomer,
     customerMiddleware,
+    checkCreateRequest,
     updateCustomer
 }

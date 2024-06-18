@@ -1,13 +1,17 @@
 import { amqp, customerRoutes, orderRoutes } from '../../../libs/ball-com/export';
-import { customerCreatedEvent, orderCreatedEvent } from '../controllers/event.controller';
+import * as eventController from '../controllers/event.controller';
 
 
 async function addListeners() {
     
-    //Calls from other projects
-    await amqp.addExchangeListener(orderRoutes.create, orderCreatedEvent);
+    //Calls from orders project
+    await amqp.addExchangeListener(orderRoutes.create, eventController.orderCreatedEvent);
+    await amqp.addExchangeListener(orderRoutes.update, eventController.orderUpdatedEvent);
+
+
     //Update read database
-    await amqp.addExchangeListener(customerRoutes.create, customerCreatedEvent);
+    await amqp.addExchangeListener(customerRoutes.create, eventController.customerCreatedEvent);
+    await amqp.addExchangeListener(customerRoutes.update, eventController.customerUpdatedEvent);
 }
 
 export {
