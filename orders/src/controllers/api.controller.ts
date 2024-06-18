@@ -46,13 +46,22 @@ async function orderMiddleware(req: Request, res: Response, next: any) {
         res.status(404).send('Order not found');
         return;
     }
+    res.locals.order = order;
+    next();
+}
 
+async function checkCreateRequest(req: Request, res: Response, next: any) {
+    let order = req.body as Order;
+    if (!order.id || !order.customerEmail || !order.productList) {
+        res.status(400).send('Invalid request, missing properties');
+        return;
+    }
     next();
 }
 
     //Update Order
 async function updateOrder(req: Request, res: Response) {
-    let oldOrder = await database.getModel('Order').findOne({id: req.params.orderId});
+    let oldOrder = res.locals.order;
     let customer = await database.getModel('Customer').findOne({email: req.body.customerEmail});
 
     if (!customer) {
@@ -61,7 +70,7 @@ async function updateOrder(req: Request, res: Response) {
     }
 
     let order:Order = {
-        id: req.params.orderId ? req.params.orderId : oldOrder.id,
+        id: oldOrder.id,
         date: new Date(),
         productList: req.body.productList ?? oldOrder.productList,
         customerEmail: req.body.customerEmail ?? oldOrder.customerEmail,
@@ -82,6 +91,7 @@ async function getAllOrders(req: Request, res: Response) {
 export {
     createOrder,
     orderMiddleware,
+    checkCreateRequest,
     updateOrder,
     getAllOrders
 }
