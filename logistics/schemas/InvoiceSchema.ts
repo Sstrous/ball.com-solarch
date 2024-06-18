@@ -1,4 +1,5 @@
 import * as mongoose from "mongoose";
+import { PaymentTypes } from "../../libs/ball-com/export";
 
 const InvoiceSchema = new mongoose.Schema({
     id: {
@@ -12,6 +13,7 @@ const InvoiceSchema = new mongoose.Schema({
     },
     paymentType: {
         type: mongoose.SchemaTypes.String,
+        enum: PaymentTypes,
         default: "Direct",
         required: true,
     },
@@ -19,7 +21,7 @@ const InvoiceSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.Boolean,
         default: false,
         required: true,
-    }
+    },
 });
 
 export default InvoiceSchema;
