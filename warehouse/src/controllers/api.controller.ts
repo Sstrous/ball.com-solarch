@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { database, amqp, Product, productRoutes } from '../../../libs/ball-com/export';
-import { storeEvent } from '../../../libs/ball-com/database/database';
 
 async function getAllProducts(req: Request, res: Response) {
     //Get Customers from database
@@ -9,17 +8,27 @@ async function getAllProducts(req: Request, res: Response) {
 }
 
 async function productMiddleware(req: Request, res: Response, next: any) {
-    let product = await database.getModel('Product').findOne({id: req.params.id});
+    let product = await database.getModel('Product').findOne({id: req.params.productId});
     if (!product) {
         res.status(404).send('Product not found');
+        return;
+    }
+    res.locals.product = product as Product;
+    next();
+}
+
+async function checkCreateRequest(req: Request, res: Response, next: any) {
+    let product = req.body as Product;
+    if (!product.id || !product.name || !product.price || !product.description || !product.quantity || !product.sellerEmail) {
+        res.status(400).send('Invalid request, missing properties');
         return;
     }
     next();
 }
 
+
 async function getProductById(req: Request, res: Response) {
-    let product = await database.getModel('Product').findOne({id: req.params.id});
-    res.send(product);
+    res.send(res.locals.product);
 }
 
 async function createProduct(req: Request, res: Response) {
@@ -44,7 +53,7 @@ async function createProduct(req: Request, res: Response) {
 }
 
 async function updateProduct(req: Request, res: Response) {
-    let oldProduct = await database.getModel('Product').findOne({id: req.params.id});
+   let oldProduct = res.locals.product;
 
     let product:Product = {
         id: oldProduct.id,
@@ -56,7 +65,7 @@ async function updateProduct(req: Request, res: Response) {
     }
 
     //Update product in database
-    await storeEvent(productRoutes.update, product);
+    await database.storeEvent(productRoutes.update, product);
     amqp.publish(productRoutes.update, product);
     res.status(200).send('Product updated');
 }
@@ -66,6 +75,7 @@ async function updateProduct(req: Request, res: Response) {
 export {
     getAllProducts,
     productMiddleware,
+    checkCreateRequest,
     getProductById,
     createProduct,
     updateProduct
