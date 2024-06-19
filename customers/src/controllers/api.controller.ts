@@ -43,9 +43,7 @@ async function getCustomerByEmail(req: Request, res: Response) {
 }
 
 async function createCustomer(req: Request, res: Response) {
-  if (
-    await database.getModel("Customer").findOne({ id: res.locals.customer.id })
-  ) {
+  if (await database.getModel("Customer").findOne({ id: res.locals.customer.id })) {
     res.status(400).send("Customer already exists");
     return;
   }
