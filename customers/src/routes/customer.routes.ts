@@ -8,6 +8,7 @@ const router = Router();
 router.get('/', (req: Request, res: Response) => {
   customerController.getAllCustomers(req, res);
 });
+
 router.all('/create', customerController.checkCreateRequest)
 
 router.post('/create', (req: Request, res: Response) => {
