@@ -6,13 +6,9 @@ const LogisticSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.Array,
     required: true,
   },
-  customerEmail: {
+  name: {
     type: mongoose.SchemaTypes.String,
     unique: true,
-    required: true,
-  },
-  cancelled: {
-    type: mongoose.SchemaTypes.Boolean,
     required: true,
   },
   DeliveryStatus: {

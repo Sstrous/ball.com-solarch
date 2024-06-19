@@ -6,13 +6,13 @@ const router = Router();
 
 // Get all customers
 router.get('/', (req: Request, res: Response) => {
-  logisticsController.getAllCompanies(req, res);
+  logisticsController.getAllDeliveryCompanies(req, res);
 });
 
 router.all('/create', logisticsController.checkCreateRequest)
 
 router.post('/create', (req: Request, res: Response) => {
-  logisticsController.addLogistic(req, res);
+  logisticsController.addDeliveryCompany(req, res);
 })
 
 router.all('/:companyId', logisticsController.logisticMiddleware);

@@ -7,14 +7,14 @@ const InvoiceSchema = new mongoose.Schema({
         unique: true,
         required: true,
     },
-    customerEmail: {
+    customerName: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
     paymentType: {
         type: mongoose.SchemaTypes.String,
         enum: PaymentTypes,
-        default: "Direct",
+        default: PaymentTypes.Direct,
         required: true,
     },
     paid: {

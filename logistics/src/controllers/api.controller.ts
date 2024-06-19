@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { database, amqp, Product, productRoutes, Logistics, logisticRoutes } from '../../../libs/ball-com/export';
+import { database, amqp, Logistics, logisticRoutes } from '../../../libs/ball-com/export';
 
 async function logisticMiddleware(req: Request, res: Response, next: any) {
     let company = await database.getModel('Logistic').findOne({id: req.params.companyId});
@@ -13,14 +13,14 @@ async function logisticMiddleware(req: Request, res: Response, next: any) {
 
 async function checkCreateRequest(req: Request, res: Response, next: any) {
     let logistics = req.body as Logistics;
-    if (!logistics.id || logistics.phone || logistics.email || logistics.address || logistics.companyName) {
+    if (!logistics.id || !logistics.phone || !logistics.email || !logistics.address || !logistics.companyName) {
         res.status(400).send('Invalid request, missing properties');
         return;
     }
     next();
 }
 
-async function getAllCompanies(req: Request, res: Response) {
+async function getAllDeliveryCompanies(req: Request, res: Response) {
     let companies = await database.getModel('Logistic').find();
     res.send(companies);
 }
@@ -29,7 +29,7 @@ async function getCompanyById(req: Request, res: Response) {
     res.send(res.locals.logistics);
 }
 
-async function addLogistic(req: Request, res: Response) {
+async function addDeliveryCompany(req: Request, res: Response) {
     let logisticsCompany = req.body as Logistics;
     await database.storeEvent(logisticRoutes.add, logisticsCompany, logisticsCompany.id);
     amqp.publish(logisticRoutes.add, logisticsCompany);
@@ -51,9 +51,9 @@ async function updateCompany(req: Request, res:Response) {
 
 export {
     logisticMiddleware,
-    getAllCompanies,
+    getAllDeliveryCompanies,
     getCompanyById,
     updateCompany,
     checkCreateRequest,
-    addLogistic
+    addDeliveryCompany
 }
