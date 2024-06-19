@@ -4,12 +4,12 @@ import * as eventController from '../controllers/event.controller';
 
 async function addListeners() {
     
-    //Calls from warehouse project
-    await amqp.addExchangeListener(productRoutes.add, eventController.productAddedEvent);
-    await amqp.addExchangeListener(productRoutes.update, eventController.productUpdatedEvent);
-    
-    //Update read database
-    await amqp.addExchangeListener(orderRoutes.create, eventController.orderCreatedEvent);
+     //Calls from order project
+    await amqp.addExchangeListener(orderRoutes.create, eventController.orderEvents.orderCreatedEvent);
+
+   //Update read database
+    await amqp.addExchangeListener(productRoutes.add, eventController.productEvents.productAddedEvent);
+    await amqp.addExchangeListener(productRoutes.update, eventController.productEvents.productUpdatedEvent);
 
 }
 

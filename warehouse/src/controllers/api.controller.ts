@@ -26,7 +26,6 @@ async function checkCreateRequest(req: Request, res: Response, next: any) {
     next();
 }
 
-
 async function getProductById(req: Request, res: Response) {
     res.send(res.locals.product);
 }
