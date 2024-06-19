@@ -6,14 +6,17 @@ const CustomerSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  company: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
   name: {
     type: mongoose.SchemaTypes.String,
     required: true,
   },
-  email: {
+  phone: {
     type: mongoose.SchemaTypes.String,
     required: true,
-    unique: true,
   },
   address: {
     type: mongoose.SchemaTypes.String,
