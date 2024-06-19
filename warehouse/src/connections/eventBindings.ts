@@ -8,8 +8,8 @@ async function addListeners() {
     await amqp.addExchangeListener(orderRoutes.create, eventController.orderEvents.orderCreatedEvent);
 
    //Update read database
-    await amqp.addExchangeListener(productRoutes.add, eventController.productEvents.productAddedEvent);
-    await amqp.addExchangeListener(productRoutes.update, eventController.productEvents.productUpdatedEvent);
+    await amqp.addExchangeListener(productRoutes.add, eventController.warehouseEvents.warehouseAddedEvent);
+    await amqp.addExchangeListener(productRoutes.update, eventController.warehouseEvents.warehouseUpdatedEvent);
 
 }
 

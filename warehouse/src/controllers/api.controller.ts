@@ -1,81 +1,61 @@
 import { Request, Response } from 'express';
-import { database, amqp, Product, productRoutes } from '../../../libs/ball-com/export';
+import { database, amqp, productRoutes, Warehouse, warehouseRoutes } from '../../../libs/ball-com/export';
 
-async function getAllProducts(req: Request, res: Response) {
-    //Get Customers from database
-   let products = await database.getModel('Product').find()
-    res.send(products);
-}
-
-async function productMiddleware(req: Request, res: Response, next: any) {
-    let product = await database.getModel('Product').findOne({id: req.params.productId});
-    if (!product) {
-        res.status(404).send('Product not found');
+async function warehouseMiddleware(req: Request, res: Response, next: any) {
+    let warehouse = await database.getModel('Warehouse').findOne({id: req.params.warehouseId});
+    if (!warehouse) {
+        res.status(404).send('Warehouse not found');
         return;
     }
-    res.locals.product = product as Product;
+    res.locals.warehouse = warehouse as Warehouse;
     next();
 }
 
 async function checkCreateRequest(req: Request, res: Response, next: any) {
-    let product = req.body as Product;
-    if (!product.id || !product.name || !product.price || !product.description || !product.quantity || !product.sellerEmail) {
+    let warehouse = req.body as Warehouse;
+    if (!warehouse.id || warehouse.address) {
         res.status(400).send('Invalid request, missing properties');
         return;
     }
+    res.locals.warehouse = warehouse;
     next();
 }
 
-async function getProductById(req: Request, res: Response) {
-    res.send(res.locals.product);
+async function getWarehouses(req: Request, res: Response) {
+    res.send(await database.getModel('Warehouse').find());
 }
 
-async function createProduct(req: Request, res: Response) {
-    if (await database.getModel('Product').findOne({id: req.body.id})) {
-        res.status(400).send('Product already exists');
+async function addWarehouse(req: Request, res: Response) {
+    let warehouse = res.locals.warehouse
+    if (await database.getModel('Warehouse').findOne({id: warehouse.id})) {
+        res.status(400).send('Warehouse already exists');
         return;
     }
-
-    let product:Product = {
-        id: req.body.id,
-        name: req.body.name,
-        price: req.body.price,
-        description: req.body.description,
-        quantity: req.body.quantity,
-        sellerEmail: req.body.sellerEmail
-    };
-
-    //Store Customer in database save event
-    await database.storeEvent(productRoutes.add, product, product.id);
-    amqp.publish(productRoutes.add, product);
-    res.status(201).send('Product succesfully added to warehouse');
+    await database.storeEvent(warehouseRoutes.add, warehouse, warehouse.id);
+    amqp.publish(warehouseRoutes.add, warehouse);
 }
 
-async function updateProduct(req: Request, res: Response) {
-   let oldProduct = res.locals.product;
+async function getWarehouseById(req:Request, res:Response) {
+    res.send(res.locals.warehouse);
+}
 
-    let product:Product = {
-        id: oldProduct.id,
-        name: req.body.name ?? oldProduct.name,
-        price: req.body.price ?? oldProduct.price,
-        description: req.body.description ?? oldProduct.description,
-        quantity: req.body.quantity ?? oldProduct.quantity,
-        sellerEmail: req.body.sellerEmail ?? oldProduct.sellerEmail
-    }
-
-    //Update product in database
-    await database.storeEvent(productRoutes.update, product, product.id);
-    amqp.publish(productRoutes.update, product);
-    res.status(200).send('Product updated');
+async function updateWarehouse(req:Request, res:Response) {
+    let oldWarehouse = res.locals.warehouse;
+    let warehouse:Warehouse = {
+        address: req.body.address ?? oldWarehouse.address,
+    };
+    await database.storeEvent(warehouseRoutes.update, warehouse, oldWarehouse.id);
+    amqp.publish(warehouseRoutes.update, warehouse);
+    res.status(200).send('Warehouse updated');   
 }
 
 
 
 export {
-    getAllProducts,
-    productMiddleware,
+    warehouseMiddleware,
     checkCreateRequest,
-    getProductById,
-    createProduct,
-    updateProduct
+    getWarehouses,
+    addWarehouse,
+    getWarehouseById,
+    updateWarehouse
 }
