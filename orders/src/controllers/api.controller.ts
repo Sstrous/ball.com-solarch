@@ -6,7 +6,7 @@ async function createOrder(req: Request, res: Response) {
         res.status(400).send('Order already exists');
         return;
     }
-    if (!await database.getModel('Customer').findOne({email: req.body.customerEmail})) {
+    if (!await database.getModel('Customer').findOne({id: req.body.id})) {
         res.status(404).send('Customer not found');
         return;
     }
@@ -30,7 +30,7 @@ async function createOrder(req: Request, res: Response) {
         id: req.body.id,
         date: new Date(),
         productList: req.body.productList,
-        customerEmail: req.body.customerEmail,
+        customerName: req.body.customerName,
     };
 
     //Update database and send event
@@ -52,7 +52,7 @@ async function orderMiddleware(req: Request, res: Response, next: any) {
 
 async function checkCreateRequest(req: Request, res: Response, next: any) {
     let order = req.body as Order;
-    if (!order.id || !order.customerEmail || !order.productList) {
+    if (!order.id || !order.customerName || !order.productList) {
         res.status(400).send('Invalid request, missing properties');
         return;
     }
@@ -73,7 +73,7 @@ async function updateOrder(req: Request, res: Response) {
         id: oldOrder.id,
         date: new Date(),
         productList: req.body.productList ?? oldOrder.productList,
-        customerEmail: req.body.customerEmail ?? oldOrder.customerEmail,
+        customerName: req.body.customerName ?? oldOrder.customerName,
     };
 
     await database.storeEvent(orderRoutes.update, order, order.id);
