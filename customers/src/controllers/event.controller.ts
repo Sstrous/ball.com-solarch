@@ -10,8 +10,8 @@ async function orderCreatedEvent(event: Event) {
     //Create order in database
     let order:Order = {
         id: event.data.id,
-        customerEmail: event.data.customerEmail,
-        paid: false
+        customerId: event.data.customerId,
+        cancelled: false
     }
 
     await database.getModel('Order').create(order);

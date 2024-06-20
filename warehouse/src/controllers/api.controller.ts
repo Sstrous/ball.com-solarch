@@ -34,7 +34,7 @@ async function createProduct(req: Request, res: Response) {
         price: req.body.price,
         description: req.body.description,
         quantity: req.body.quantity,
-        sellerEmail: req.body.sellerEmail
+        sellerId: req.body.sellerId
     };
 
     //Store Customer in database save event
@@ -52,7 +52,7 @@ async function updateProduct(req: Request, res: Response) {
         price: req.body.price ?? oldProduct.price,
         description: req.body.description ?? oldProduct.description,
         quantity: req.body.quantity ?? oldProduct.quantity,
-        sellerEmail: req.body.sellerEmail ?? oldProduct.sellerEmail
+        sellerId: req.body.sellerId ?? oldProduct.sellerIq
     }
 
     //Update product in database

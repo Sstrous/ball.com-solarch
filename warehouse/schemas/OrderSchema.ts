@@ -5,9 +5,8 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.Array,
     required: true,
   },
-  customerEmail: {
-    type: mongoose.SchemaTypes.String,
-    unique: true,
+  customerId: {
+    type: mongoose.SchemaTypes.ObjectId,
     required: true,
   },
   cancelled: {

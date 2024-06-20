@@ -28,25 +28,25 @@ async function createCustomer(req: Request, res: Response) {
     }
     let customer:Customer = {
         name: req.body.name,
-        email: req.body.email,
+        id: req.body.email,
         address: req.body.address
     };
 
     //Store Customer in database save event
-    await database.storeEvent(customerRoutes.create, customer);
-    amqp.publish(customerRoutes.create, customer);
+    await database.storeEvent(customerRoutes.created, customer);
+    amqp.publish(customerRoutes.created, customer);
     res.status(201).send('Customer succesfully created');
 }
 
 async function updateCustomer(req: Request, res: Response) {
     let updatedCustomer:Customer = {
         name: req.body.name,
-        email: req.body.email,
+        id: req.body.email,
         address: req.body.address
     };
 
-    await database.storeEvent(customerRoutes.update, updatedCustomer);
-    amqp.publish(customerRoutes.update, updatedCustomer);
+    await database.storeEvent(customerRoutes.updated, updatedCustomer);
+    amqp.publish(customerRoutes.updated, updatedCustomer);
     res.status(200).send('Customer succesfully updated');
 }
 

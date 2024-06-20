@@ -5,7 +5,7 @@ import { orderCreatedEvent, customerCreatedEvent, productAdded } from "../contro
 async function addListeners() {
     
     //Calls from other projects
-    await amqp.addExchangeListener(customerRoutes.create, customerCreatedEvent);
+    await amqp.addExchangeListener(customerRoutes.created, customerCreatedEvent);
     await amqp.addExchangeListener(productRoutes.add, productAdded);
     
     // Update read database

@@ -5,7 +5,7 @@ async function customerCreatedEvent(event:Event) {
 
     //Order database only keeps track of customer email
     let customer:Customer = {
-        email: event.data.email,
+        id: event.data.email,
     }
 
     await database.getModel('Customer').create(customer);

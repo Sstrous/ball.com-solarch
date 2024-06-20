@@ -37,7 +37,7 @@ async function createInvoice(req: Request, res: Response) {
     }
 
     let invoice: Invoice = {
-        customerEmail: req.body.customerEmail,
+        customerId: req.body.customerId,
         paid: req.body.paid, 
         price: req.body.price,
         PaymentType: req.body.PaymentType,
@@ -62,7 +62,7 @@ async function updateInvoice(req: Request, res: Response) {
 
     // Invoice DATE should not be updateable
     let newInvoice: Invoice = {
-        customerEmail: req.body.customerEmail,
+        customerId: req.body.customerId,
         paid: req.body.paid, 
         price: req.body.price,
         PaymentType: req.body.PaymentType,

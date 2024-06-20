@@ -84,8 +84,32 @@ services:
     networks:
       mongo-warehouse:
 
+  finance:
+    build:
+      context: ./finance
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./libs:/libs
+    ports:
+      - 3004:3000
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+    networks:
+      rabbitmq:
+      mongo-finance:
+  mongo-finance:
+    image: mongo
+    volumes:
+      - /data/finance
+    networks:
+      mongo-finance:
+
 networks:
   rabbitmq:
   mongo-customers:
   mongo-orders:
   mongo-warehouse:
+  mongo-finance:

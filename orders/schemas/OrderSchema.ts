@@ -14,8 +14,8 @@ const OrdersSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.Date,
     required: true,
   },
-  customerEmail: {
-    type: String,
+  customerId: {
+    type: mongoose.SchemaTypes.ObjectId,
     required: true,
   },
 });

@@ -6,7 +6,7 @@ async function createOrder(req: Request, res: Response) {
         res.status(400).send('Order already exists');
         return;
     }
-    if (!await database.getModel('Customer').findOne({email: req.body.customerEmail})) {
+    if (!await database.getModel('Customer').findById(req.body.customerId)) {
         res.status(404).send('Customer not found');
         return;
     }
@@ -30,7 +30,6 @@ async function createOrder(req: Request, res: Response) {
         id: req.body.id,
         date: new Date(),
         productList: req.body.productList,
-        customerEmail: req.body.customerEmail,
     };
 
     //Update database and send event
@@ -53,7 +52,7 @@ async function orderMiddleware(req: Request, res: Response, next: any) {
     //Update Order
 async function updateOrder(req: Request, res: Response) {
     let oldOrder = await database.getModel('Order').findOne({id: req.params.orderId});
-    let customer = await database.getModel('Customer').findOne({email: req.body.customerEmail});
+    let customer = await database.getModel('Customer').findById(req.params.customerId)
 
     if (!customer) {
         res.status(404).send('Customer not found');
@@ -64,7 +63,7 @@ async function updateOrder(req: Request, res: Response) {
         id: req.params.orderId ? req.params.orderId : oldOrder.id,
         date: new Date(),
         productList: req.body.productList ?? oldOrder.productList,
-        customerEmail: req.body.customerEmail ?? oldOrder.customerEmail,
+        customerId: req.body.customerId ?? oldOrder.customerId,
     };
 
     await database.storeEvent(orderRoutes.update, order);

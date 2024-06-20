@@ -5,7 +5,6 @@ const InvoiceSchema = new mongoose.Schema({
 
     id: {
         type: mongoose.SchemaTypes.ObjectId,
-        required: true
     },
     price: {
         type: mongoose.SchemaTypes.Decimal128,
@@ -26,9 +25,11 @@ const InvoiceSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
-    paymentType: {
-        type: PaymentTypes
-    }
+    PaymentType: {
+        type: String,
+        enum: Object.values(PaymentTypes),
+        required: true
+    },
 });
 
 export default InvoiceSchema;

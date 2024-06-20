@@ -11,7 +11,7 @@ async function orderCreatedEvent(event: Event) {
     //Update product database
     let order:Order = {
         productList: event.data.productList,
-        customerEmail: event.data.customerEmail,
+        customerId: event.data.customerId,
         cancelled: false
     }
 
