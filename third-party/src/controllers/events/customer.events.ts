@@ -9,6 +9,7 @@ async function customerCreatedEvent(event:Event) {
         name: event.data.name,
         company: event.data.company,
         phone: event.data.phone,
+        address: event.data.address
     }
 
     await database.getModel('Customer').create(customer);
@@ -26,6 +27,7 @@ async function customerUpdatedEvent(event:Event) {
         customer.name = event.data.name ?? customer.name;
         customer.company = event.data.company ?? customer.company;
         customer.phone = event.data.phone ?? customer.phone;
+        customer.address = event.data.address ?? customer.address;
 
      await customer.save();
      console.log('Updated from third-party ' + customer.id);

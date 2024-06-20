@@ -5,7 +5,7 @@ async function orderCreatedEvent(event: Event) {
     let order:Order = {
         id: event.data.id,
         productList: event.data.productList,
-        customerName: event.data.customerName,
+        customerId: event.data.customerId,
         cancelled: false
     }
 

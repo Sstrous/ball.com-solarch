@@ -19,7 +19,7 @@ async function productMiddleware(req: Request, res: Response, next: any) {
 
 async function checkCreateRequest(req: Request, res: Response, next: any) {
     let product = req.body as Product;
-    if (!product.id || !product.name || !product.price || !product.description || !product.quantity || !product.customerName) {
+    if (!product.id || !product.name || !product.price || !product.description || !product.quantity || !product.sellerId) {
         res.status(400).send('Invalid request, missing properties');
         return;
     }
@@ -36,13 +36,18 @@ async function createProduct(req: Request, res: Response) {
         return;
     }
 
+    if (!await database.getModel('Customer').findOne({id: req.body.sellerId})) {
+        res.status(404).send('Seller not found');
+        return;
+    }
+
     let product:Product = {
         id: req.body.id,
         name: req.body.name,
         price: req.body.price,
         description: req.body.description,
         quantity: req.body.quantity,
-        customerName: req.body.customerName
+        sellerId: req.body.sellerId
     };
 
     //Store Customer in database save event
@@ -53,13 +58,17 @@ async function createProduct(req: Request, res: Response) {
 
 async function updateProduct(req: Request, res: Response) {
    let oldProduct = res.locals.product;
+   if (!await database.getModel('Customer').findOne({id: req.body.sellerId})) {
+        res.status(404).send('Seller not found');
+        return;
+    }
 
     let product:Product = {
         name: req.body.name ?? oldProduct.name,
         price: req.body.price ?? oldProduct.price,
         description: req.body.description ?? oldProduct.description,
         quantity: req.body.quantity ?? oldProduct.quantity,
-        customerName: req.body.sellerName ?? oldProduct.sellerName
+        sellerId: req.body.sellerId ?? oldProduct.sellerId
     }
 
     //Update product in database

@@ -14,7 +14,7 @@ const CustomerSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
-    companyName: {
+    company: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },

@@ -22,7 +22,7 @@ const ProductSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.Number,
         required: true,
     },
-    customerName: {
+    sellerId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
