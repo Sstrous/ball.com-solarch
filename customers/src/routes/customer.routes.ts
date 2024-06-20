@@ -9,17 +9,19 @@ router.get('/', (req: Request, res: Response) => {
   customerController.getAllCustomers(req, res);
 });
 
+router.all('/create', customerController.checkCreateRequest)
+
 router.post('/create', (req: Request, res: Response) => {
   customerController.createCustomer(req, res);
 });
 
-router.all('/:email', customerController.customerMiddleware);
+router.all('/:customerId', customerController.customerMiddleware);
 
-router.put('/:email', (req: Request, res: Response) => {
+router.put('/:customerId', (req: Request, res: Response) => {
   customerController.updateCustomer(req, res);
 });
 
-router.get('/:email', (req: Request, res: Response) => {
+router.get('/:customerId', (req: Request, res: Response) => {
   customerController.getCustomerByEmail(req, res);
 });
 

@@ -1,10 +1,14 @@
 import * as mongoose from "mongoose";
 
 const CustomerSchema = new mongoose.Schema({
-  email: {
+  id: {
     type: mongoose.SchemaTypes.String,
-    required: true,
     unique: true,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
   },
 });
 

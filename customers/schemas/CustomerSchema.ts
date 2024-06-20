@@ -1,14 +1,22 @@
 import * as mongoose from "mongoose";
 
 const CustomerSchema = new mongoose.Schema({
+  id: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+    unique: true,
+  },
+  company: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
   name: {
     type: mongoose.SchemaTypes.String,
     required: true,
   },
-  email: {
+  phone: {
     type: mongoose.SchemaTypes.String,
     required: true,
-    unique: true,
   },
   address: {
     type: mongoose.SchemaTypes.String,
