@@ -17,7 +17,7 @@ async function productUpdatedEvent(event:Event) {
     product.quantity = event.data.quantity ?? product.quantity;
     product.price = event.data.price ?? product.price;
     product.description = event.data.description ?? product.description;
-    product.sellerEmail = event.data.sellerEmail ?? product.sellerEmail;
+    product.sellerId = event.data.sellerId ?? product.sellerId;
     
     await product.save();
     console.log('Updated from third-party ' + product.id);

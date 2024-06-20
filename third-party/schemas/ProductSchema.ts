@@ -26,6 +26,10 @@ const ProductSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
+    warehouseId: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    }
 });
 
 export default ProductSchema;
