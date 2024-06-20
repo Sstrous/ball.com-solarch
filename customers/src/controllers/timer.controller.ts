@@ -5,6 +5,8 @@ import Config from "../../../libs/ball-com/config/config.json";
 import { database, amqp, customerRoutes, Customer } from "../../../libs/ball-com/export";
 
 async function startCron() {
+  //Run it once at start
+  await GetData();
     cron.schedule("0 0 * * *", async () => {
         console.log("Running task every day at midnight");
         await GetData();
