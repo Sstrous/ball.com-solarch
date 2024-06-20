@@ -14,7 +14,7 @@ const OrdersSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.Date,
     required: true,
   },
-  customerEmail: {
+  customerName: {
     type: String,
     required: true,
   },

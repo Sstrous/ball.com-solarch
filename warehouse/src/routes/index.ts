@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import productRoutes from './product.routes';
+import warehouseRoutes from './warehouse.routes';
 
 // Create a new Router instance
 const router = Router();
 
 // Mount the routers
-router.use('/products', productRoutes);
+router.use('/warehouses', warehouseRoutes);
 
 export default router;

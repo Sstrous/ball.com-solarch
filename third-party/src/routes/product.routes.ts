@@ -9,6 +9,8 @@ router.get('/', (req: Request, res: Response) => {
   productController.getAllProducts(req, res);
 });
 
+router.all('/create', productController.checkCreateRequest)
+
 router.post('/create', (req: Request, res: Response) => {
   productController.createProduct(req, res);
 })

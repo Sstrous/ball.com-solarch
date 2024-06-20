@@ -6,7 +6,7 @@ async function createOrder(req: Request, res: Response) {
         res.status(400).send('Order already exists');
         return;
     }
-    if (!await database.getModel('Customer').findOne({email: req.body.customerEmail})) {
+    if (!await database.getModel('Customer').findOne({id: req.body.customerId})) {
         res.status(404).send('Customer not found');
         return;
     }
@@ -30,11 +30,11 @@ async function createOrder(req: Request, res: Response) {
         id: req.body.id,
         date: new Date(),
         productList: req.body.productList,
-        customerEmail: req.body.customerEmail,
+        customerId: req.body.customerId,
     };
 
     //Update database and send event
-    await database.storeEvent(orderRoutes.create, order);
+    await database.storeEvent(orderRoutes.create, order, order.id);
     amqp.publish(orderRoutes.create, order);
     res.status(201).send('Order succesfully created');
 }
@@ -46,13 +46,22 @@ async function orderMiddleware(req: Request, res: Response, next: any) {
         res.status(404).send('Order not found');
         return;
     }
+    res.locals.order = order;
+    next();
+}
 
+async function checkCreateRequest(req: Request, res: Response, next: any) {
+    let order = req.body as Order;
+    if (!order.id || !order.customerId || !order.productList) {
+        res.status(400).send('Invalid request, missing properties');
+        return;
+    }
     next();
 }
 
     //Update Order
 async function updateOrder(req: Request, res: Response) {
-    let oldOrder = await database.getModel('Order').findOne({id: req.params.orderId});
+    let oldOrder = res.locals.order;
     let customer = await database.getModel('Customer').findOne({email: req.body.customerEmail});
 
     if (!customer) {
@@ -61,13 +70,13 @@ async function updateOrder(req: Request, res: Response) {
     }
 
     let order:Order = {
-        id: req.params.orderId ? req.params.orderId : oldOrder.id,
+        id: oldOrder.id,
         date: new Date(),
         productList: req.body.productList ?? oldOrder.productList,
-        customerEmail: req.body.customerEmail ?? oldOrder.customerEmail,
+        customerId: req.body.customerId ?? oldOrder.customerId,
     };
 
-    await database.storeEvent(orderRoutes.update, order);
+    await database.storeEvent(orderRoutes.update, order, order.id);
     amqp.publish(orderRoutes.update, order);
     res.status(200).send('Order updated');
 }
@@ -82,6 +91,7 @@ async function getAllOrders(req: Request, res: Response) {
 export {
     createOrder,
     orderMiddleware,
+    checkCreateRequest,
     updateOrder,
     getAllOrders
 }

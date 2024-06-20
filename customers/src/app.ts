@@ -7,6 +7,7 @@ import {addListeners} from './connections/eventBindings';
 
 import { amqp, database } from '../../libs/ball-com/export';
 import {addDatabaseSchemas} from './connections/database';
+import { startCron } from './controllers/timer.controller';
 
 // Create Express server
 const app = express(); // New express instance
@@ -38,6 +39,9 @@ setTimeout(async () => {
 
   addDatabaseSchemas();
   console.log("Database schemas added");
+
+  await startCron();
+  console.log("Timer started to update database every day at midnight");
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
