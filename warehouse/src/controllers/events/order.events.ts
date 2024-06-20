@@ -15,7 +15,7 @@ async function orderCreatedEvent(event: Event) {
         if (!productInDb) {
             console.log("Product not found in product database: " + product.productId);
             order.cancelled = true;
-            return;
+            break;
         }
         if (productInDb.quantity - product.quantity < 0) {
             console.log("Product out of stock in warehouse database: " + event.data.productId);
@@ -26,7 +26,7 @@ async function orderCreatedEvent(event: Event) {
             //Fire a new event that says this item is out of stock so order project knows product is not there anymore
             database.storeEvent(productRoutes.update, product, product.id);
             amqp.publish(productRoutes.update, product);
-            return;
+            break;
         }
         //If this is not the case update quantity in warehouse database
         productInDb.quantity -= product.quantity;

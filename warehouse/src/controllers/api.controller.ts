@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { database, amqp, productRoutes, Warehouse, warehouseRoutes } from '../../../libs/ball-com/export';
+import { database, amqp, Warehouse, warehouseRoutes } from '../../../libs/ball-com/export';
 
 async function warehouseMiddleware(req: Request, res: Response, next: any) {
     let warehouse = await database.getModel('Warehouse').findOne({id: req.params.warehouseId});
@@ -13,7 +13,7 @@ async function warehouseMiddleware(req: Request, res: Response, next: any) {
 
 async function checkCreateRequest(req: Request, res: Response, next: any) {
     let warehouse = req.body as Warehouse;
-    if (!warehouse.id || warehouse.address) {
+    if (!warehouse.id || !warehouse.address) {
         res.status(400).send('Invalid request, missing properties');
         return;
     }
