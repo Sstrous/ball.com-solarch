@@ -1,3 +1,5 @@
+import * as customerEvents from './events/customer.events';
+import * as orderEvents from './events/order.events';
 import { Order, database, Event } from "../../../libs/ball-com/export";
 
 async function customerCreatedEvent(event:Event) {
@@ -21,6 +23,6 @@ async function orderCreatedEvent(event: Event) {
 
 
 export {
-    customerCreatedEvent,
-    orderCreatedEvent
+    customerEvents,
+    orderEvents
 }
