@@ -1,4 +1,4 @@
-import { database, Order, Event } from '../../../libs/ball-com/export';
+import { database, Event, Invoice, PaymentTypes, Product } from '../../../libs/ball-com/export';
 
 async function invoiceCreatedEvent(event: Event) {
     
@@ -11,6 +11,13 @@ async function invoiceUpdatedEvent(event: Event) {
     await database.getModel('Invoice').findOneAndUpdate(event.data.invoiceId, event.data);
 
     console.log('Invoice deleted in ')
+}
+
+async function invoiceDeletedEvent(event: Event) {
+    
+    await database.getModel('Invoice').findOneAndDelete(event.data.invoiceId)
+
+    console.log('Invoice deleted')
 }
 
 async function customerCreatedEvent(event:Event) {
@@ -26,22 +33,31 @@ async function customerUpdatedEvent(event: Event) {
     console.log('Customer updated in customerDB')
 }
 
+// With a new Order, an Invoice should be created
 async function orderCreatedEvent(event: Event) {
-    //Create order in database
-    let order:Order = {
-        id: event.data.id,
+
+    // calculate total price of order
+    let totalPrice = 0;
+    event.data.productList.forEach((product: Product) => {
+        totalPrice += product.price!;
+    });
+
+    let invoice: Invoice = {
         customerId: event.data.customerId,
-        cancelled: false,
-        productList: event.data.productList
+        price: totalPrice,
+        orderId: event.data.id,
+        PaymentType: PaymentTypes.AfterPay,
+        paid: false
     }
 
-    await database.getModel('Order').create(order);
-    console.log("Order created in customer database: " + event.data.id);
+    await database.getModel('Invoice').create(invoice);
+    console.log("Invoice created in customer database: " + event.data.id);
 }
 
 export {
     invoiceCreatedEvent,
     invoiceUpdatedEvent,
+    invoiceDeletedEvent,
     customerCreatedEvent,
-    orderCreatedEvent,
+    orderCreatedEvent
 }

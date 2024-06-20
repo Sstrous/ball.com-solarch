@@ -80,11 +80,18 @@ async function deleteInvoice(req: Request, res: Response) {
 
     let invoice = await database.getModel('Invoice').findById(req.body.invoiceID)
 
-    // store and publish event
-    await database.storeEvent(invoiceRoutes.deleted, invoice);
-    amqp.publish(invoiceRoutes.created, invoice);
-    
-    res.sendStatus(201);
+    if (!invoice) {
+
+        res.status(404).send({ message: 'Invoice does not exist' })
+    }
+    else {
+        
+        // store and publish event
+        await database.storeEvent(invoiceRoutes.deleted, invoice);
+        amqp.publish(invoiceRoutes.created, invoice);
+        
+        res.sendStatus(201);
+    }
 }
 
 export {
