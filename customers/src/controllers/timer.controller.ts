@@ -59,10 +59,19 @@ async function GetData() {
                       timestamp: new Date().toISOString()
                   };
 
-                if (!await database.getModel("Customer").findOne({id: customer.id})) {
-                    await database.storeEvent(customerRoutes.created, customer, customer.id);
-                    amqp.publish(customerRoutes.created, event);
+                try {
+                    if (!await database.getModel("Customer").findOne({id: customer.id})) {
+                        await database.storeEvent(customerRoutes.created, customer, customer.id);
+                        await database.getReadConnection().model("Customer").create(customer);
+                        amqp.publish(customerRoutes.created, event);
+                    }
+                } catch (e) {
+                    console.log(e);
+                    console.log("Something went wrong storing a event/publishing?")
+
                 }
+
+
               }
             }
           ));
