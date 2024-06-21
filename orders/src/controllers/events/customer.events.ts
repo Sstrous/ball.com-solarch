@@ -1,4 +1,4 @@
-import { Customer, Event, database } from "../../../../libs/ball-com/export";
+import {Customer, Event, database, customerRoutes} from "../../../../libs/ball-com/export";
 
 async function customerCreatedEvent(event:Event) {
 
@@ -16,6 +16,7 @@ async function customerCreatedEvent(event:Event) {
         address: event.data.data.address,
     }
 
+
     try {
         await database.storeEvent('CustomerCreated', event.data.data, event.data.id);
     } catch (e) {
@@ -27,8 +28,6 @@ async function customerCreatedEvent(event:Event) {
     } catch (e) {
         console.log("Creating the customer went wrong.."+e + JSON.stringify(customer, null, 2));
     }
-
-
 
     console.log("Customer created in order database: " + event.data.id);
 }

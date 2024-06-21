@@ -51,10 +51,17 @@ async function GetData() {
                     address: line['Address'],
                     company: line['Company Name']
                 }
-                
+
+                  const event = {
+                      type: customerRoutes.created,
+                      data: customer,
+                      id: customer.id,
+                      timestamp: new Date().toISOString()
+                  };
+
                 if (!await database.getModel("Customer").findOne({id: customer.id})) {
                     await database.storeEvent(customerRoutes.created, customer, customer.id);
-                    amqp.publish(customerRoutes.created, customer);
+                    amqp.publish(customerRoutes.created, event);
                 }
               }
             }
