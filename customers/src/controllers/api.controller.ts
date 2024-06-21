@@ -43,19 +43,39 @@ async function getCustomerByEmail(req: Request, res: Response) {
 }
 
 async function createCustomer(req: Request, res: Response) {
+
   if (await database.getModel("Customer").findOne({ id: res.locals.customer.id })) {
     res.status(400).send("Customer already exists");
     return;
   }
 
+  try {
+    //await database.getWriteConnection().model("Customer").create(res.locals.customer);
+    await database.getReadConnection().model("Customer").create(res.locals.customer);
+  } catch (e) {
+    console.log(e);
+    console.log("Error creating customer. Something went wrong in either creating the customer in the read or write DB.");
+  }
+  // Create the event
+  const event = {
+    type: customerRoutes.created,
+    data: req.body,
+    id: req.body.id,
+    timestamp: new Date().toISOString()
+  };
+
   //Store Customer in database save event
   await database.storeEvent(
     customerRoutes.created,
-    res.locals.customer,
-    res.locals.customer.id
+    event,
+    req.body.id
   );
-  amqp.publish(customerRoutes.created, res.locals.customer);
-  res.status(201).send("Customer succesfully created");
+  amqp.publish(customerRoutes.created, event);
+
+  res.status(201).send({
+    message: "Customer successfully created, and is sent to the message broker.",
+    event: event
+  });
 }
 
 async function updateCustomer(req: Request, res: Response) {

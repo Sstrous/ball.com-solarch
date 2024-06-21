@@ -25,4 +25,6 @@ router.get('/:customerId', (req: Request, res: Response) => {
   customerController.getCustomerByEmail(req, res);
 });
 
+
+
 export default router;

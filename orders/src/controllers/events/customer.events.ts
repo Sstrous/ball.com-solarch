@@ -1,15 +1,35 @@
 import { Customer, Event, database } from "../../../../libs/ball-com/export";
 
 async function customerCreatedEvent(event:Event) {
-    console.log("Connection called: " + event.data);
+
+    console.log("Connection called: (shows event.data) " + event.data);
+    console.log("Event: " + event);
+
+    console.log("Event data JSONfied: " + JSON.stringify(event.data, null, 2));
 
     //Order database only keeps track of customer email
     let customer:Customer = {
-        id: event.data.id,
-        name: event.data.name,
+        id: event.data.data.id,
+        company: event.data.data.company,
+        name: event.data.data.name,
+        phone: event.data.data.phone,
+        address: event.data.data.address,
     }
 
-    await database.getModel('Customer').create(customer);
+    try {
+        await database.storeEvent('CustomerCreated', event.data.data, event.data.id);
+    } catch (e) {
+        console.log("Storing the event went wrong.."+e);
+    }
+
+    try {
+        await database.getModel('Customer').create(customer);
+    } catch (e) {
+        console.log("Creating the customer went wrong.."+e + JSON.stringify(customer, null, 2));
+    }
+
+
+
     console.log("Customer created in order database: " + event.data.id);
 }
 
