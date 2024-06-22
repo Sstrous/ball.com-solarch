@@ -38,7 +38,7 @@ async function checkCreateRequest(req: Request, res: Response, next: any) {
   next();
 }
 
-async function getCustomerByEmail(req: Request, res: Response) {
+async function getCustomerByID(req: Request, res: Response) {
   res.send(res.locals.customer);
 }
 
@@ -62,12 +62,13 @@ async function updateCustomer(req: Request, res: Response) {
   let customer = res.locals.customer;
 
   let updatedCustomer: Customer = {
+    id: customer.id,
     name: req.body.name ?? customer.name,
     phone: req.body.phone ?? customer.phone,
     address: req.body.address ?? customer.address,
     company: req.body.company ?? customer.company,
   };
-
+  
   await database.storeEvent(
     customerRoutes.updated,
     updatedCustomer,
@@ -79,7 +80,7 @@ async function updateCustomer(req: Request, res: Response) {
 
 export {
   getAllCustomers,
-  getCustomerByEmail,
+  getCustomerByID,
   createCustomer,
   customerMiddleware,
   checkCreateRequest,

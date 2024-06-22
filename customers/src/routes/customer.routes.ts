@@ -22,7 +22,7 @@ router.put('/:customerId', (req: Request, res: Response) => {
 });
 
 router.get('/:customerId', (req: Request, res: Response) => {
-  customerController.getCustomerByEmail(req, res);
+  customerController.getCustomerByID(req, res);
 });
 
 export default router;
