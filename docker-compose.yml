@@ -14,6 +14,33 @@ services:
     networks:
       rabbitmq:
 
+  orders:
+    build:
+      context: ./orders
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./libs:/libs
+    ports:
+      - 3002:3000
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+    networks:
+      rabbitmq:
+      mongo-orders:
+  mongo-orders:
+    image: mongo
+    volumes:
+      - /data/orders
+    ports:
+      - 27019:27017
+    networks:
+      mongo-orders:
+
+
+
   customers:
     build:
       context: ./customers
@@ -40,30 +67,7 @@ services:
     networks:
       mongo-customers:
 
-  orders:
-    build:
-      context: ./orders
-      dockerfile: Dockerfile
-    restart: on-failure
-    volumes:
-      - ./libs:/libs
-    ports:
-      - 3002:3000
-    depends_on:
-      - rabbitmq
-    links:
-      - rabbitmq
-    networks:
-      rabbitmq:
-      mongo-orders:
-  mongo-orders:
-    image: mongo
-    volumes:
-      - /data/orders
-    ports:
-      - 27019:27017
-    networks:
-      mongo-orders:
+
   
   warehouse:
     build:

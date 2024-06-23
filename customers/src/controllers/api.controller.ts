@@ -82,20 +82,39 @@ async function updateCustomer(req: Request, res: Response) {
   let customer = res.locals.customer;
 
   let updatedCustomer: Customer = {
+    id: customer.id,
     name: req.body.name ?? customer.name,
     phone: req.body.phone ?? customer.phone,
     address: req.body.address ?? customer.address,
     company: req.body.company ?? customer.company,
   };
 
-  await database.storeEvent(
-    customerRoutes.updated,
-    updatedCustomer,
-    customer.id
-  );
-  amqp.publish(customerRoutes.updated, updatedCustomer);
-  res.status(200).send("Customer succesfully updated");
+  try {
+    // Update the customer in the read database
+    await database.getModel('Customer').updateOne(
+        { id: customer.id },
+        { $set: updatedCustomer },
+        { upsert: true }
+    );
+    console.log('Customer updated in read database: ' + customer.id);
+
+    // Store the event
+    await database.storeEvent(
+        customerRoutes.updated,
+        updatedCustomer,
+        customer.id
+    );
+
+    // Publish the event to RabbitMQ
+    amqp.publish(customerRoutes.updated, updatedCustomer);
+
+    res.status(200).send("Customer successfully updated");
+  } catch (error) {
+    console.error('Error updating customer:', error);
+    res.status(500).send("Error updating customer");
+  }
 }
+
 
 export {
   getAllCustomers,

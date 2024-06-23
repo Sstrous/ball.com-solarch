@@ -2,11 +2,6 @@ import {Customer, Event, database, customerRoutes} from "../../../../libs/ball-c
 
 async function customerCreatedEvent(event:Event) {
 
-    console.log("Connection called: (shows event.data) " + event.data);
-    console.log("Event: " + event);
-
-    console.log("Event data JSONfied: " + JSON.stringify(event.data, null, 2));
-
     //Order database only keeps track of customer email
     let customer:Customer = {
         id: event.data.data.id,
@@ -15,7 +10,6 @@ async function customerCreatedEvent(event:Event) {
         phone: event.data.data.phone,
         address: event.data.data.address,
     }
-
 
     try {
         await database.storeEvent('CustomerCreated', event.data.data, event.data.id);
@@ -28,11 +22,10 @@ async function customerCreatedEvent(event:Event) {
     } catch (e) {
         console.log("Creating the customer went wrong.."+e + JSON.stringify(customer, null, 2));
     }
-
-    console.log("Customer created in order database: " + event.data.id);
 }
 
 async function customerUpdatedEvent(event:Event) {
+    console.log('Updating customer using the Event coming from MS CUstomer!');
     let customer = await database.getModel('Customer').findOne({id: event.data.id}) 
      if (!customer) {
          console.log("Customer not found in reading database: " + event.data.id);

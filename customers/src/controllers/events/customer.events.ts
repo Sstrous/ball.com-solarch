@@ -23,6 +23,9 @@ async function customerUpdatedEvent(event:Event) {
     console.log('Updated ' + customer.email);
 }
 
+
+
+
 export {
     customerCreatedEvent,
     customerUpdatedEvent

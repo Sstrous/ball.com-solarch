@@ -10,9 +10,31 @@ import {
 } from "../../../libs/ball-com/export";
 
 
-async function getAllEvents(req: Request, res: Response) {
+async function getAllEventsAndPublish(req: Request, res: Response) {
+
     let events = await database.getWriteConnection().model('Event').find({}).sort('timestamp').exec();
-    res.send(events);
+
+        // Create a history channel for publishing events to the message broker
+    try {
+        await amqp.createHistoryChannel();
+    } catch (e) {
+        res.status(500).send("Error creating history channel"+e);
+    }
+
+
+        for (const event of events) {
+            if (!event.type || !event.data) {
+                console.error('Invalid event:', event);
+                continue; // Skip invalid events
+            }
+            if (!await amqp.publishToHistoryChannel(event.type, event.data)) {
+                res.status(500).send("Error publishing to history channel ");
+            }
+        }
+
+        res.status(200).send("All events published successfully");
+
+
 }
 
 async function getAllOrderEvents(req: Request, res: Response) {
@@ -54,7 +76,7 @@ async function runHistoryEvents(req: Request, res: Response) {
 export {
     customerEvents,
     orderEvents,
-    getAllEvents,
     getAllOrderEvents,
-    getAllCustomerEvents
+    getAllCustomerEvents,
+    getAllEventsAndPublish
 }

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import orderRoutes from './order.routes';
-import healthCheck from './healthCheck';
+
 
 // Create a new Router instance
 const router = Router();
