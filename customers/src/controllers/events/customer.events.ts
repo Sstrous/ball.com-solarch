@@ -7,20 +7,26 @@ async function customerCreatedEvent(event:Event) {
 }
 
 async function customerUpdatedEvent(event:Event) {
-   let customer = await database.getModel('Customer').findOne({id: event.data.id}) 
-    if (!customer) {
-        console.log("Customer not found in reading database: " + event.data.id);
-        return;
+   let customer: any ;
+
+    try {
+        customer = await database.getModel('Customer').findOne({ id: event.data.customerId });
+    } catch (e) {
+        console.log("Something went wrong searching for the customer id: "+e);
     }
 
-    customer.email = event.data.id ?? customer.id;
-    customer.name = event.data.name ?? customer.name;
-    customer.address = event.data.address ?? customer.address;
-    customer.company = event.data.company ?? customer.company;
-    customer.phone = event.data.phone ?? customer.phone;
+    try {
+        for(let key of Object.keys(event.data.updates)) {
+            console.log('Updating ' + key + ' to ' + event.data.updates[key])
+            customer[key] = event.data.updates[key];
+        }
+    } catch (e) {
+        console.log("Something went wrong getting the object keyss" + e);
+    }
 
     await customer.save();
-    console.log('Updated ' + customer.email);
+
+    console.log('Updated ' + customer.name);
 }
 
 export {

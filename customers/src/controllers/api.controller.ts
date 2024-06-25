@@ -4,8 +4,10 @@ import {
   Customer,
   amqp,
   customerRoutes,
+  EventSchema,
 } from "../../../libs/ball-com/export";
 import CustomerSchema from "../../schemas/CustomerSchema";
+
 
 async function getAllCustomers(req: Request, res: Response) {
   //Get Customers from database
@@ -39,7 +41,24 @@ async function checkCreateRequest(req: Request, res: Response, next: any) {
 }
 
 async function getCustomerByID(req: Request, res: Response) {
-  res.send(res.locals.customer);
+  let customerId = req.params.customerId;
+  let eventsData: any;
+
+  eventsData = await database.getModelWrite("Event").find({id: customerId}).sort({ timestamp: 1 });
+  let customer: any = eventsData[0].data;
+  customer = JSON.parse(customer);
+
+  for(let event of eventsData) {
+    if (event.type == 'customers.created'){
+      continue
+    }
+    let eventData = JSON.parse(event.data);
+    for(let key of Object.keys(eventData.updates)) {
+      customer[key] = eventData.updates[key];
+    }
+  }
+
+  res.status(200).send(JSON.stringify(customer));
 }
 
 async function createCustomer(req: Request, res: Response) {
@@ -60,23 +79,28 @@ async function createCustomer(req: Request, res: Response) {
 
 async function updateCustomer(req: Request, res: Response) {
   let customer = res.locals.customer;
+  let updates = req.body;
 
-  let updatedCustomer: Customer = {
-    id: customer.id,
-    name: req.body.name ?? customer.name,
-    phone: req.body.phone ?? customer.phone,
-    address: req.body.address ?? customer.address,
-    company: req.body.company ?? customer.company,
-  };
-  
-  await database.storeEvent(
-    customerRoutes.updated,
-    updatedCustomer,
-    customer.id
-  );
-  amqp.publish(customerRoutes.updated, updatedCustomer);
+  let data = {
+    customerId: customer.id,
+    updates: updates,
+  }
+
+  try {
+    await database.storeEvent(customerRoutes.updated, data, customer.id);
+  } catch (e) {
+    res.status(400).send("Something went wrong on storing the event!")
+  }
+  try {
+    amqp.publish(customerRoutes.updated, data);
+  }catch (e) {
+    res.status(400).send("Something went wrong on publishing the event!")
+  }
+
   res.status(200).send("Customer succesfully updated");
 }
+
+
 
 export {
   getAllCustomers,
